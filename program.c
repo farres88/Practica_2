@@ -72,14 +72,11 @@ int Ortogonal( float vect1[N], float vect2[N]){
 }
 
 void Projection( float vect1[N], float vect2[N], float vectres[N] ){
-    float producte_escalar = 0;
-    float magnitud_v = 0;
-
-    producte_escalar = Scalar(vect1, vect2);
-    magnitud_v = Magnitude(vect2);
+    float producte_escalar = Scalar(vect1, vect2);
+    float magnitud_v = fabs(Magnitude(vect2));
 
     for (int i = 0; i < N; i++) {
-        vectres[i] = (producte_escalar / (magnitud_v * magnitud_v)) * vect2[i];
+        vectres[i] = (producte_escalar / (magnitud_v)) * vect2[i];
     }
 }
 
@@ -124,8 +121,9 @@ float NormFrobenius( float M[N][N] ){
 
 int DiagonalDom( float M[N][N] ){
     float diagonal;
-    float suma = 0;
+    float suma;
     for (int i = 0; i < N; i++) {
+        suma = 0;
         diagonal = fabs(M[i][i]);
         for(int j = 0; j < N; j++){
             if (i != j){
@@ -237,7 +235,8 @@ int main(){
     PrintVect(V4, 0, 10);
     PrintVect(V4, 256, 10);
 
-    //I
+    //I 
+    //ERROR AQUI
     Projection(V2, V3, V4);
     printf("\n\nEls elements 0 a 9 del resultat de la projecció de V2 sobre V3 són: \n");
     PrintVect(V4, 0, 10);
