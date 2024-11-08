@@ -46,10 +46,8 @@ void MultEscalar( float vect[N], float vectres[N], float alfa ){
 
 float Scalar (float vect1[N], float vect2[N]){
     float resultado = 0;
-    float producto = 0;
     for(int i = 0; i < N; i++){
-        producto = vect1[i] * vect2[i];
-        resultado =  resultado + producto;
+        resultado +=  vect1[i] * vect2[i];
     }
     return resultado;
 }
@@ -57,7 +55,7 @@ float Scalar (float vect1[N], float vect2[N]){
 float Magnitude( float vect[N] ){
     float sum = 0;
     for (int i = 0; i < N; i++) {
-        sum = sum + (vect[i] * vect[i]);
+        sum += (vect[i] * vect[i]);
     }
     return sqrt(sum);
 }
@@ -73,10 +71,10 @@ int Ortogonal( float vect1[N], float vect2[N]){
 
 void Projection( float vect1[N], float vect2[N], float vectres[N] ){
     float producte_escalar = Scalar(vect1, vect2);
-    float magnitud_v = fabs(Magnitude(vect2));
+    float magnitud_v = Magnitude(vect2);
 
     for (int i = 0; i < N; i++) {
-        vectres[i] = (producte_escalar / (magnitud_v)) * vect2[i];
+        vectres[i] = (producte_escalar / magnitud_v) * vect2[i];
     }
 }
 
@@ -144,6 +142,42 @@ void Matriu_x_Vector( float M[N][N], float vect[N], float vectres[N] ){
             vectres[i] = vectres[i] + (M[i][j] * vect[j]);
         }
     }
+}
+
+int Jacobi(float A[N][N], float b[N], float x_result[N], unsigned max_iter) {
+    int aplicable = 1;
+    float x_antiguo[N];
+    float x_nuevo[N];
+    float suma;
+
+    for (int i = 0; i < N; i++) {
+        x_antiguo[i] = 0;
+        x_nuevo[i] = 0;
+    }
+    
+    if (DiagonalDom(A) == 1) {
+        for (int paso = 0; paso < max_iter; paso++) {
+            for (int i = 0; i < N; i++) {
+                suma = b[i];
+                for (int j = 0; j < N; j++) {
+                    if (j != i) {
+                        suma -= A[i][j] * x_antiguo[j];
+                    }
+                }
+                x_nuevo[i] = suma / A[i][i];
+            }
+            for (int i = 0; i < N; i++) {
+                x_antiguo[i] = x_nuevo[i];
+            }
+        }
+        for (int i = 0; i < N; i++) {
+            x_result[i] = x_antiguo[i];
+        }
+    } else {
+        aplicable = 0;
+    }
+
+    return aplicable;
 }
 
 
@@ -250,6 +284,43 @@ int main(){
     printf("\n\nEls elements 0 a 9 del resultat de la multiplicació de Mat per v2 són: \n");
     PrintVect(V4, 0, 10);
 
-    printf("\n");
+    //K
+    //MatDD*X = V3
+    // 1 iter MatDD*X = V3
+    int aplicableMatDD_1 = Jacobi(MatDD, V3, V4, 1);
+    if (aplicableMatDD_1 == 1) {
+        printf("\nEls elements 0 a 9 de la solució (1 iter) del sistema d'equacions són:\n");
+        PrintVect(V4, 0, 10);
+    }
+
+    // 1000 iter MatDD*X = V3
+    int aplicableMatDD_1000 = Jacobi(MatDD, V3, V4, 1000);
+    if (aplicableMatDD_1000 == 1) {
+        printf("\nEls elements 0 a 9 de la solució (1000 iters) del sistema d'equacions són:\n");
+        PrintVect(V4, 0, 10);
+    }
+
+    if (aplicableMatDD_1 == 0 || aplicableMatDD_1000 == 0) {
+        printf("\nLa matriu MDD no és diagonal dominant, no es pot aplicar Jacobi\n");
+    }
+
+    //Mat*X = V3
+    // 1 iter Mat*X = V3
+    int aplicableMat_1 = Jacobi(Mat, V3, V4, 1);
+    if (aplicableMat_1 == 1) {
+        printf("\nEls elements 0 a 9 de la solució (1 iter)  del sistema d'equacions són:\n");
+        PrintVect(V4, 0, 10);
+    } 
+
+    // 1000 iter Mat*X = V3
+    int aplicableMat_1000 = Jacobi(Mat, V3, V4, 1000);
+    if (aplicableMat_1000 == 1) {
+        printf("\nEls elements 0 a 9 de la solució (1000 iters)  del sistema d'equacions són:\n");
+        PrintVect(V4, 0, 10);
+    }
+
+    if (aplicableMat_1 == 0 || aplicableMat_1000 == 0) {
+        printf("\nLa matriu M no és diagonal dominant, no es pot aplicar Jacobi\n");
+    }
 
 }
