@@ -3,9 +3,10 @@
 #include <math.h>
 #define N 512
 
-float V1[N], V2[N], V3[N], V4[N];
-float Mat[N][N], MatDD[N][N];
+float V1[N], V2[N], V3[N], V4[N]; //Declaracion de vectores
+float Mat[N][N], MatDD[N][N]; //Declaracion de matrices
 
+//Inicializacion de vectores y matrices donde les ponemos N valores a lo vectores y N N a las matrices
 void InitData(){
     int i,j;
     srand(334411);
@@ -27,41 +28,41 @@ void InitData(){
 }
 
 void PrintVect( float vect[N], int from, int numel ){
-    for(  int i = from; i < from + numel; i++){
+    for(  int i = from; i < from + numel; i++){ //El bucle empieza en la posicion from y llega hasta numel
         printf("%f ", vect[i]);
     }
 }
 
 void PrintRow( float mat[N][N], int row, int from, int numel ){
-    for(int i = from; i < from + numel; i++){
-        printf("%f ", mat[row][i]);  
+    for(int i = from; i < from + numel; i++){ //El bucle empieza en la posicion from y llega hasta numel
+        printf("%f ", mat[row][i]); //Añadimos row que es la fila que queremos recorrer
     }
 }
 
 void MultEscalar( float vect[N], float vectres[N], float alfa ){
-    for(int i = 0; i < N; i++){
-        vectres[i] = vect[i] * alfa;
+    for(int i = 0; i < N; i++){ //EL bucle hace N iteraciones
+        vectres[i] = vect[i] * alfa; //Multiplicamos el valor del vector en la posiion i con alfa
     }
 }
 
 float Scalar (float vect1[N], float vect2[N]){
     float resultado = 0;
-    for(int i = 0; i < N; i++){
-        resultado +=  vect1[i] * vect2[i];
+    for(int i = 0; i < N; i++){ //EL bucle hace N iteraciones
+        resultado +=  vect1[i] * vect2[i]; //Sumamos los resultados de la multiplicacion de los valores de los vectores en la posicion i
     }
     return resultado;
 }
 
 float Magnitude( float vect[N] ){
     float sum = 0;
-    for (int i = 0; i < N; i++) {
-        sum += (vect[i] * vect[i]);
+    for (int i = 0; i < N; i++) { //EL bucle hace N iteraciones
+        sum += (vect[i] * vect[i]); //Sumamos los resultados de la multiplicacon de los valores de cada vector en la posicion i
     }
     return sqrt(sum);
 }
 
 int Ortogonal( float vect1[N], float vect2[N]){
-    float resultado = Scalar(vect1, vect2);
+    float resultado = Scalar(vect1, vect2); //Llamamos a la funcion Scalar poniendo de parametro v1 y v2, nos devuelve un float
     if(resultado == 0){
         return 1; //Si que son ortogonals
     } else {
@@ -70,22 +71,22 @@ int Ortogonal( float vect1[N], float vect2[N]){
 }
 
 void Projection( float vect1[N], float vect2[N], float vectres[N] ){
-    float producte_escalar = Scalar(vect1, vect2);
-    float magnitud_v = Magnitude(vect2);
+    float producte_escalar = Scalar(vect1, vect2); //Llamamos a la funcion Scalar poniendo de parametro v1 y v2, nos devuelve un float
+    float magnitud_v = Magnitude(vect2); //LLamamos a la funcion Magnitud con parametro a v2, nos devuelve un float
 
-    for (int i = 0; i < N; i++) {
-        vectres[i] = (producte_escalar / magnitud_v) * vect2[i];
+    for (int i = 0; i < N; i++) { //EL bucle hace N iteraciones
+        vectres[i] = (producte_escalar / magnitud_v) * vect2[i]; //Dividimos el resultado de la funcion Scalar entre resultado Magnitud, y multiplicamos por el valor del v2 en la posicion i
     }
 }
 
 float Infininorm( float M[N][N] ){
     float maxim = 0;
-    for(int i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){ //EL bucle hace N iteraciones
         float suma = 0;
-        for(int j = 0; j < N; j++){
-            suma = suma + fabs(M[i][j]);
+        for(int j = 0; j < N; j++){ //EL bucle hace N iteraciones para recorrer las columnas
+            suma = suma + fabs(M[i][j]); //Sumamos el valor absoluto de todos los valores de la fila i
         }
-        if(suma > maxim){
+        if(suma > maxim){ //Si la suma de los valores de la fila i es mayor a el maxim se actualiza maxim
             maxim = suma;
         }      
     }
@@ -94,12 +95,12 @@ float Infininorm( float M[N][N] ){
 
 float Onenorm( float M[N][N] ){
     float maxim = 0;
-    for(int i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){ //EL bucle hace N iteraciones
         float suma = 0;
-        for(int j = 0; j < N; j++){
-            suma = suma + fabs(M[j][i]);
+        for(int j = 0; j < N; j++){ //EL bucle hace N iteraciones para recorrer las columnas
+            suma = suma + fabs(M[j][i]); //Sumamos el valor absoluto de todos los valores de la columna j
         }
-        if(suma > maxim){
+        if(suma > maxim){ //Si la suma de los valores de la columna j es mayor a el maxim se actualiza maxim
             maxim = suma;
         }      
     }
@@ -107,25 +108,25 @@ float Onenorm( float M[N][N] ){
 }
 
 float NormFrobenius( float M[N][N] ){
-    float suma = 0;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            suma = suma + (M[i][j] * M[i][j]);
+    float suma = 0; 
+    for (int i = 0; i < N; i++) { //EL bucle hace N iteraciones
+        for (int j = 0; j < N; j++) { //EL bucle hace N iteraciones para recorrer columnas
+            suma = suma + (M[i][j] * M[i][j]); //Se suma el valor del cuadrado del valor de la matriz i(fila) j(columna)
         }
     }
-    float resultado = sqrt(suma);
+    float resultado = sqrt(suma); //Hacemos la raiz cuadrada de la suma total
     return resultado;
 }
 
 int DiagonalDom( float M[N][N] ){
     float diagonal;
     float suma;
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++) { //EL bucle hace N iteraciones
         suma = 0;
-        diagonal = fabs(M[i][i]);
+        diagonal = fabs(M[i][i]); //El valor de la diagonal, a medida que avance seria 0 0, 1 1, 2 2...
         for(int j = 0; j < N; j++){
-            if (i != j){
-                suma = suma + fabs(M[i][j]);
+            if (i != j){ //Tiene que ser diferente puesto que no queremos usar el de la diagonal
+                suma = suma + fabs(M[i][j]); //Sumamos el valor (absoluto) de cada columna de la fila
             }
         }
         if (diagonal < suma) {
@@ -136,48 +137,48 @@ int DiagonalDom( float M[N][N] ){
 }
 
 void Matriu_x_Vector( float M[N][N], float vect[N], float vectres[N] ){
-    for(int i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){ //EL bucle hace N iteraciones
         vectres[i] = 0;
-        for(int j = 0; j < N; j++){
-            vectres[i] = vectres[i] + (M[i][j] * vect[j]);
+        for(int j = 0; j < N; j++){  //EL bucle hace N iteraciones para recorrer columnas
+            vectres[i] = vectres[i] + (M[i][j] * vect[j]); //Multiplicamos el valor de la matriz i j con el valor del vector j, valor de cada columna con cada valor del vector
         }
     }
 }
 
 int Jacobi(float A[N][N], float b[N], float x_result[N], unsigned max_iter) {
-    int aplicable = 1;
+    int aplicable = 1; //Inicializamos las variables como los vectores, resultado, suma
     float x_antiguo[N];
     float x_nuevo[N];
     float suma;
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++) { //Inicializa los arreglos x_antiguo y x_nuevo con ceros
         x_antiguo[i] = 0;
         x_nuevo[i] = 0;
     }
     
-    if (DiagonalDom(A) == 1) {
-        for (int paso = 0; paso < max_iter; paso++) {
-            for (int i = 0; i < N; i++) {
+    if (DiagonalDom(A) == 1) { //Comprueba si la matriz A es diagonal dominante
+        for (int paso = 0; paso < max_iter; paso++) {// Hace bucles durante el numero maximo de iteraciones
+            for (int i = 0; i < N; i++) { //Recorre todas las ecuaciones del sistema
                 suma = b[i];
-                for (int j = 0; j < N; j++) {
-                    if (j != i) {
+                for (int j = 0; j < N; j++) {  //Suma los términos de la ecuacion, excepto el termino de la variable x_i
+                    if (j != i) { //Si j no es igual a i, resta el valor A[i][j] * x_antiguo[j]
                         suma -= A[i][j] * x_antiguo[j];
                     }
                 }
-                x_nuevo[i] = suma / A[i][i];
+                x_nuevo[i] = suma / A[i][i]; //Calcula el nuevo valor de x_i
             }
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < N; i++) { //Calcula el nuevo valor de x_i
                 x_antiguo[i] = x_nuevo[i];
             }
         }
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) { //Al final de los bucles, copia los resultados en x_result
             x_result[i] = x_antiguo[i];
         }
-    } else {
+    } else { //No se puede aplicar Jacobi
         aplicable = 0;
     }
 
-    return aplicable;
+    return aplicable; //Devuelve 1, se puede aplicar Jacobi
 }
 
 
